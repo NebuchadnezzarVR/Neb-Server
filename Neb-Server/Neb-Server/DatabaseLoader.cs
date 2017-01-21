@@ -31,20 +31,11 @@ namespace Neb_Server
             api.Login();
             var user = api.GetCurrentUser().Value;
             Console.WriteLine(user.FullName);
-            while (true) {
-                var media = api.GetUserMedia(user.UserName, 5).Value;
+                var media = api.GetUserMedia(user.UserName, 10).Value;
                 foreach(var image in media)
                 {
-                    foreach(var i in image.Images)
-                    {
-                        Console.WriteLine(i.Url);
-                    }
+					Dao.insert(image);
                 }
-                Console.ReadLine();
-            }
-           
-            //open link
-           // System.Diagnostics.Process.Start(link);
         }
     }
 }

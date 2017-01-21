@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InstaSharp.Models;
+using InstaSharper.Classes.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
@@ -17,22 +17,12 @@ namespace Neb_Server
 
 		public static MongoClient Instance => LazyClient.Value;
 
-		private static void insert(Media media)
+		public static void insert(InstaMedia media)
 		{
 			var db = Instance.GetDatabase("Boilermake");
 			var cl = db.GetCollection<BsonDocument>("ImageData");
 			cl.InsertOne(media.ToBsonDocument());
 		}
-
-		private static void Main()
-		{
-			insert(new Media()
-			{
-				Attribution = new Attribution()
-				{
-					Name = "Hello"
-				}
-			});
-		}
+		
 	}
 }
