@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InstaSharp;
+using InstaSharper;
 using System.Configuration;
 using System.Web.Mvc;
+using InstaSharper.API.Builder;
 
 namespace Neb_Server
 {
-    class DatabaseLoader
+
+
+    public class DatabaseLoader
     {
-        public static InstagramConfig config;
         static void Main(string[] args)
         {
             var clientId = "d70b4e0076e64b439285d3c979bbb0a8";
@@ -19,27 +21,30 @@ namespace Neb_Server
             var redirectUri = "http://www.google.com";
             var realtimeUri = "";
 
-            config = new InstagramConfig(clientId, clientSecret, redirectUri, realtimeUri);
-            Login();
-
+            var api = new InstaApiBuilder()
+                 .SetUser(new InstaSharper.Classes.UserSessionData()
+                 {
+                     UserName = "mrshawnabu",
+                     Password = "fuckjordan"
+                 })
+                 .Build();
+            api.Login();
+            var user = api.GetCurrentUser().Value;
+            Console.WriteLine(user.FullName);
+            while (true) {
+                var media = api.GetUserMedia(user.UserName, 5).Value;
+                foreach(var image in media)
+                {
+                    foreach(var i in image.Images)
+                    {
+                        Console.WriteLine(i.Url);
+                    }
+                }
+                Console.ReadLine();
+            }
+           
             //open link
-            System.Diagnostics.Process.Start(link);
-        }
-
-        public static ActionResult Login()
-        {
-            var scopes = new List<OAuth.Scope>();
-            scopes.Add(OAuth.Scope.Likes);
-            scopes.Add(OAuth.Scope.Comments);
-            scopes.Add(OAuth.Scope.Follower_List);
-            scopes.Add(OAuth.Scope.Basic);
-            scopes.Add(OAuth.Scope.Public_Content);
-            scopes.Add(OAuth.Scope.Relationships);
-
-            var link =OAuth.AuthLink(config.OAuthUri + "authorize", config.ClientId, config.RedirectUri, scopes, OAuth.ResponseType.Code);
-
-            return Redirect(link)
-      
+           // System.Diagnostics.Process.Start(link);
         }
     }
 }
