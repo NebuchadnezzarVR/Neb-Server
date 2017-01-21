@@ -35,7 +35,7 @@ public class DatabaseLoader
              .Build();
         api.Login();
         user = api.GetCurrentUser().Value;
-        media = api.GetUserMedia(user.UserName, 5).Value;
+        media = api.GetUserMedia(user.UserName, 10).Value;
         feed = api.GetUserFeed(5).Value;
         followers = api.GetUserFollowers(user.UserName, 10).Value;
 
@@ -79,5 +79,4 @@ public class DatabaseLoader
                 }
             }
             Console.ReadLine(); */
- 
 }
