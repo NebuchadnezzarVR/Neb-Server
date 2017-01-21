@@ -7,44 +7,77 @@ using InstaSharper;
 using System.Configuration;
 using System.Web.Mvc;
 using InstaSharper.API.Builder;
+using InstaSharper.API;
+using InstaSharper.Classes.Models;
+using InstaSharper.Classes;
 
-namespace Neb_Server
+public class DatabaseLoader
 {
+    private static IInstaApi api;
+    private static InstaUser user;
+    private static InstaMediaList media;
+    private static InstaFeed feed;
+    private static InstaUserList followers;
 
-
-    public class DatabaseLoader
+    public static void init(string userName, string password)
     {
-        static void Main(string[] args)
-        {
-            var clientId = "d70b4e0076e64b439285d3c979bbb0a8";
-            var clientSecret = "26eb62fb0e5b4e0aab0ef66ffa9d59ee";
-            var redirectUri = "http://www.google.com";
-            var realtimeUri = "";
+        var clientId = "d70b4e0076e64b439285d3c979bbb0a8";
+        var clientSecret = "26eb62fb0e5b4e0aab0ef66ffa9d59ee";
+        var redirectUri = "http://www.google.com";
+        var realtimeUri = "";
 
-            var api = new InstaApiBuilder()
-                 .SetUser(new InstaSharper.Classes.UserSessionData()
-                 {
-                     UserName = "mrshawnabu",
-                     Password = "fuckjordan"
-                 })
-                 .Build();
-            api.Login();
-            var user = api.GetCurrentUser().Value;
-            Console.WriteLine(user.FullName);
-            while (true) {
-                var media = api.GetUserMedia(user.UserName, 5).Value;
-                foreach(var image in media)
-                {
-                    foreach(var i in image.Images)
-                    {
-                        Console.WriteLine(i.Url);
-                    }
-                }
-                Console.ReadLine();
-            }
-           
-            //open link
-           // System.Diagnostics.Process.Start(link);
-        }
+        api = new InstaApiBuilder()
+             .SetUser(new InstaSharper.Classes.UserSessionData()
+             {
+                 UserName = userName,
+                 Password = password
+             })
+             .Build();
+        api.Login();
+        user = api.GetCurrentUser().Value;
+        media = api.GetUserMedia(user.UserName, 5).Value;
+        feed = api.GetUserFeed(5).Value;
+        followers = api.GetUserFollowers(user.UserName, 10).Value;
+
     }
+
+    public static string getFullName()
+    {
+        return user.FullName; 
+    }
+
+    public static string getUserName()
+    {
+        return user.UserName;
+    }
+
+    public static InstaMediaList getMedia()
+    {
+        return media;
+    }
+
+    public static InstaFeed getFeed()
+    {
+        return feed;
+    }
+
+    public static InstaUserList getFollowers()
+    {
+        return followers;
+    }
+
+    public static void Logout()
+    {
+        api.Logout();
+    }
+    
+   /*         foreach (var image in media)
+            {
+                foreach (var i in image.Images)
+                {
+                    Console.WriteLine(i.Url);
+                }
+            }
+            Console.ReadLine(); */
+ 
 }
